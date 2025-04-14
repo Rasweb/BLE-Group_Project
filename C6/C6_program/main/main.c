@@ -50,6 +50,7 @@ void app_main(void)
                 }
                 else{
                     printf("Wrong code!\n");
+                    i= 6;
                 }
             }
         }
