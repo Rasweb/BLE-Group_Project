@@ -38,7 +38,7 @@ btn_i_handle btn_i_init(const gpio_num_t pin, const strapping_mode mode, const i
     }
 
     gpio_config_t button_conf = {
-        .intr_type = GPIO_INTR_POSEDGE,
+        .intr_type = GPIO_INTR_NEGEDGE,
         .mode = GPIO_MODE_INPUT,
         .pin_bit_mask = 1ULL << pin,
         .pull_down_en = pull_down,

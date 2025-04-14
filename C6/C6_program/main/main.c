@@ -10,9 +10,9 @@ int correctsequence[] = {
 
 void app_main(void)
 {
-    btn1 = btn_i_init(4, PULLUP, 100);
-    btn2 = btn_i_init(21, PULLUP, 100);
-    btn3 = btn_i_init(13, PULLUP, 100);
+    btn1 = btn_i_init(4, PULLUP, 250);
+    btn2 = btn_i_init(21, PULLUP, 250);
+    btn3 = btn_i_init(13, PULLUP, 250);
     int attempt = 0;
     while (attempt < 3)
     {
