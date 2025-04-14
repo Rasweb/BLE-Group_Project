@@ -50,22 +50,20 @@ void app_main(void)
                 btn_clear_flag(btn3);
             }
         }
-        // if (currentIndex != lastindex)
-        // {
-        //     lastindex ++;
-        //     for (int i = 0; i < 6; i++)
-        //     {
-        //         if (user_sequence[i] == correctsequence[i])
-        //         {
-        //             printf("+");
-        //         }
-        //         else
-        //         {
-        //             printf("Wrong code!\n");
-        //             i = 6;
-        //         }
-        //     }
-        // }
+        if (currentIndex != lastindex)
+        {
+            lastindex ++;
+            
+                if (user_sequence[currentIndex] == correctsequence[currentIndex])
+                {
+                    printf("Correct\n");
+                }
+                else
+                {
+                    printf("Wrong!\n");
+                }
+            
+        }
     }
         
 }
