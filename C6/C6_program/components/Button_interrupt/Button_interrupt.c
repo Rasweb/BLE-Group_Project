@@ -6,6 +6,7 @@ static esp_err_t btn_i_register_isr(btn_i_handle button);
 
 btn_i_handle btn_i_init(const gpio_num_t pin, const strapping_mode mode, const int debounce_ms)
 {
+    gpio_reset_pin(pin); //ny
     btn_i_handle button = (btn_i_handle)pvPortMalloc(sizeof(btn_i_conf));
     if (!button)
     {
