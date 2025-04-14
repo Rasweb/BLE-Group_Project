@@ -54,15 +54,24 @@ void app_main(void)
 
                 if (user_sequence[currentIndex - 1] == correctsequence[currentIndex - 1])
                 {
-                    printf("Correct\n");
+                    if (currentIndex == 6){
+                        printf("Access granted!\n\n");
+                        attempt = 0;
+                    }
+                    else{
+                        printf("Correct\n");
+                    }
                 }
                 else
                 {
                     printf("Wrong!\n");
-                    currentIndex = 0;
+                    attempt ++;
+                    currentIndex = 6;
                     lastindex = 0;
+                    
                 }
             }
         }
     }
+    printf("Access Denied!\n");
 }
