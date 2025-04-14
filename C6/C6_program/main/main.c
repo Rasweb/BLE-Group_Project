@@ -25,6 +25,9 @@ void app_main(void)
     {
         state = button_logic();
         vTaskDelay(pdMS_TO_TICKS(10));
+        if(state == ACCESS){
+            printf("HOORAAAY!\n");
+        }
     }
 }
 logic_e button_logic()
