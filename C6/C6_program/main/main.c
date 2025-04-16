@@ -53,14 +53,14 @@ void app_main(void)
     }
 
     // register the callback function to the gattc module
-    ret = esp_ble_gattc_register_callback(esp_gattc_cb);
+    ret = esp_ble_gattc_register_callback(esp_gattc_cb); //här börjar helvetet
     if (ret)
     {
         ESP_LOGE(GATTC_TAG, "%s gattc register failed, error code = %x", __func__, ret);
         return;
     }
 
-    ret = esp_ble_gattc_app_register(PROFILE_A_APP_ID);
+    ret = esp_ble_gattc_app_register(PROFILE_A_APP_ID); 
     if (ret)
     {
         ESP_LOGE(GATTC_TAG, "%s gattc app register failed, error code = %x", __func__, ret);
@@ -70,4 +70,20 @@ void app_main(void)
     {
         ESP_LOGE(GATTC_TAG, "set local  MTU failed, error code = %x", local_mtu_ret);
     }
+
+    while (1)
+    {
+        uint8_t val[] = {'o', 'n'};
+        esp_ble_gattc_write_char(client_interface,
+                                 gl_profile_tab[PROFILE_A_APP_ID].conn_id,
+                                 gl_profile_tab[PROFILE_A_APP_ID].char_handle,
+                                 sizeof(val),
+                                 val,
+                                 ESP_GATT_WRITE_TYPE_RSP,
+                                 ESP_GATT_AUTH_REQ_NONE);
+
+        vTaskDelay(pdMS_TO_TICKS(1000));
+        printf("hej\n");
+    }
+
 }

@@ -1,27 +1,27 @@
 #include <stdio.h>
 #include "Bluedroid_central_client.h"
 
-/* Declare static functions */
 
-static void gattc_profile_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_gattc_cb_param_t *param);
+uint16_t client_conn = 0;
 
+esp_gatt_if_t client_interface = 0;
 
-static esp_bt_uuid_t remote_filter_service_uuid = {
+esp_bt_uuid_t remote_filter_service_uuid = {
     .len = ESP_UUID_LEN_16,
     .uuid = {.uuid16 = REMOTE_SERVICE_UUID,},
 };
 
-static esp_bt_uuid_t remote_filter_char_uuid = {
+esp_bt_uuid_t remote_filter_char_uuid = {
     .len = ESP_UUID_LEN_16,
     .uuid = {.uuid16 = REMOTE_NOTIFY_CHAR_UUID,},
 };
 
-static esp_bt_uuid_t notify_descr_uuid = {
+esp_bt_uuid_t notify_descr_uuid = {
     .len = ESP_UUID_LEN_16,
     .uuid = {.uuid16 = ESP_GATT_UUID_CHAR_CLIENT_CONFIG,},
 };
 
-static esp_ble_scan_params_t ble_scan_params = {
+esp_ble_scan_params_t ble_scan_params = {
     .scan_type              = BLE_SCAN_TYPE_ACTIVE,
     .own_addr_type          = BLE_ADDR_TYPE_PUBLIC,
     .scan_filter_policy     = BLE_SCAN_FILTER_ALLOW_ALL,
@@ -31,14 +31,15 @@ static esp_ble_scan_params_t ble_scan_params = {
 };
 
 /* One gatt-based profile one app_id and one gattc_if, this array will store the gattc_if returned by ESP_GATTS_REG_EVT */
-static struct gattc_profile_inst gl_profile_tab[PROFILE_NUM] = {
+struct gattc_profile_inst gl_profile_tab[PROFILE_NUM] = {
     [PROFILE_A_APP_ID] = {
         .gattc_cb = gattc_profile_event_handler,
         .gattc_if = ESP_GATT_IF_NONE,       /* Not get the gatt_if, so initial is ESP_GATT_IF_NONE */
     },
 };
 
-static void gattc_profile_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_gattc_cb_param_t *param)
+
+void gattc_profile_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_gattc_cb_param_t *param)
 {
     esp_ble_gattc_cb_param_t *p_data = (esp_ble_gattc_cb_param_t *)param;
 
@@ -74,6 +75,11 @@ static void gattc_profile_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_
             break;
         }
         ESP_LOGI(GATTC_TAG, "Service discover complete, conn_id %d", param->dis_srvc_cmpl.conn_id);
+        
+        
+        client_conn = param->dis_srvc_cmpl.conn_id; //richards jävla påhitt
+
+
         esp_ble_gattc_search_service(gattc_if, param->dis_srvc_cmpl.conn_id, &remote_filter_service_uuid);
         break;
     case ESP_GATTC_CFG_MTU_EVT:
@@ -373,9 +379,15 @@ void esp_gattc_cb(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_ga
 {
     /* If event is register event, store the gattc_if for each profile */
     if (event == ESP_GATTC_REG_EVT) {
-        if (param->reg.status == ESP_GATT_OK) {
+        if (param->reg.status == ESP_GATT_OK)
+        {
+            //lägg
+            // client_if = gattc_if;
+            client_interface =gattc_if;
             gl_profile_tab[param->reg.app_id].gattc_if = gattc_if;
-        } else {
+        }
+        else
+        {
             ESP_LOGI(GATTC_TAG, "reg app failed, app_id %04x, status %d",
                     param->reg.app_id,
                     param->reg.status);
@@ -385,12 +397,16 @@ void esp_gattc_cb(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_ga
 
     /* If the gattc_if equal to profile A, call profile A cb handler,
      * so here call each profile's callback */
-    do {
+    do
+    {
         int idx;
-        for (idx = 0; idx < PROFILE_NUM; idx++) {
+        for (idx = 0; idx < PROFILE_NUM; idx++)
+        {
             if (gattc_if == ESP_GATT_IF_NONE || /* ESP_GATT_IF_NONE, not specify a certain gatt_if, need to call every profile cb function */
-                    gattc_if == gl_profile_tab[idx].gattc_if) {
-                if (gl_profile_tab[idx].gattc_cb) {
+                gattc_if == gl_profile_tab[idx].gattc_if)
+            {
+                if (gl_profile_tab[idx].gattc_cb)
+                {
                     gl_profile_tab[idx].gattc_cb(event, gattc_if, param);
                 }
             }
