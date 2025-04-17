@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "Bluedroid_central_client.h"
-
+bt_handle bt;
 void app_main(void)
 {
     // Initialize NVS.
@@ -17,6 +17,7 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_bt_controller_mem_release(ESP_BT_MODE_CLASSIC_BT));
 
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
+  
     ret = esp_bt_controller_init(&bt_cfg);
     if (ret)
     {
@@ -69,5 +70,30 @@ void app_main(void)
     if (local_mtu_ret)
     {
         ESP_LOGE(GATTC_TAG, "set local  MTU failed, error code = %x", local_mtu_ret);
+    }
+    TickType_t previousEvent = 0;
+    uint8_t data_to_send[] = {0x01, 0x02};  // exempeldata
+    bool hej = true;
+    while(1){
+        TickType_t currentick = xTaskGetTickCount();
+        if(currentick - previousEvent >= pdMS_TO_TICKS(7000))
+        {
+            
+            // esp_ble_gattc_write_char(
+            // bt.gattc_if,
+            // bt.conn_id,
+            // bt.char_handle,
+            // sizeof(data_to_send),
+            // data_to_send,
+            // ESP_GATT_WRITE_TYPE_NO_RSP,       // eller ESP_GATT_WRITE_TYPE_NO_RSP
+            // ESP_GATT_AUTH_REQ_NONE
+            // );
+            previousEvent = currentick;
+            printf("bajs\n");
+        }
+        printf(".\n");
+        vTaskDelay(pdMS_TO_TICKS(1000));
+
+
     }
 }
