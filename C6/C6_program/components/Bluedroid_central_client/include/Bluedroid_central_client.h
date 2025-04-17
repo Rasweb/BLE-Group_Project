@@ -29,11 +29,12 @@ static bool get_server = false;
 static esp_gattc_char_elem_t *char_elem_result   = NULL;
 static esp_gattc_descr_elem_t *descr_elem_result = NULL;
 
-
+extern esp_gatt_if_t client_interface;
+extern uint16_t client_conn;
 
 // esp_gatt_if_t client_if;
 
-typedef struct {
+typedef struct gattc_profile_inst{
     esp_gattc_cb_t gattc_cb;
     uint16_t gattc_if;
     uint16_t app_id;
@@ -43,20 +44,25 @@ typedef struct {
     uint16_t char_handle;
     esp_bd_addr_t remote_bda;
 
-    uint16_t client_conn;
-    esp_gatt_if_t client_interface;
+    // uint16_t client_conn;
+    // esp_gatt_if_t client_interface;
+    // struct gattc_profile_inst gl_profile_tab[];
     // gattc_profile_inst gl_profile_tab[];
     
-}gattc_profile_inst;
-typedef gattc_profile_inst * ble_handle;
+};
+typedef struct gattc_profile_inst * ble_handle;
 
 // uint16_t client_conn;
-// esp_gatt_if_t client_interface;
+// extern struct esp_gatt_if_t client_interface1;
 extern struct gattc_profile_inst gl_profile_tab[];
 
-void gattc_profile_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_gattc_cb_param_t *param);
+void gattc_profile_event_handler(ble_handle ble, esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_gattc_cb_param_t *param);
 
 ble_handle run_ble_setup();
+
+void ble_run_2();
+
+void ble_write(ble_handle ble);
 
 void esp_gap_cb(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param);
 void esp_gattc_cb(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_gattc_cb_param_t *param);
