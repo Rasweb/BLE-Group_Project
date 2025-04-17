@@ -200,6 +200,7 @@ void example_exec_write_event_env(prepare_type_env_t *prepare_write_env, esp_ble
 }
 
 static void gatts_profile_a_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp_ble_gatts_cb_param_t *param) {
+    client_conn = param->write.conn_id;
     switch (event) {
     case ESP_GATTS_REG_EVT:
         ESP_LOGI(GATTS_TAG, "GATT server register, status %d, app_id %d, gatts_if %d", param->reg.status, param->reg.app_id, gatts_if);
@@ -255,7 +256,6 @@ static void gatts_profile_a_event_handler(esp_gatts_cb_event_t event, esp_gatt_i
         break;
     }
     case ESP_GATTS_WRITE_EVT: {
-        client_conn = param->write.conn_id; //Richards påhitt
         
         ESP_LOGI(GATTS_TAG, "Characteristic write, conn_id %d, trans_id %" PRIu32 ", handle %d", param->write.conn_id, param->write.trans_id, param->write.handle);
         if (!param->write.is_prep){
@@ -269,9 +269,12 @@ static void gatts_profile_a_event_handler(esp_gatts_cb_event_t event, esp_gatt_i
                         uint8_t notify_data[15];
                         for (int i = 0; i < sizeof(notify_data); ++i)
                         {
-                            notify_data[i] = i%0xff;
+                            notify_data[i] = 0xaa;
                         }
                         //the size of notify_data[] need less than MTU size
+                        gatts_if_global = gatts_if; //Richards påhitt
+                        client_conn = param->write.conn_id; //Richards påhitt
+
                         esp_ble_gatts_send_indicate(gatts_if, param->write.conn_id, gl_profile_tab[PROFILE_A_APP_ID].char_handle,
                                                 sizeof(notify_data), notify_data, false);
                     }
@@ -571,4 +574,15 @@ void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp
             }
         }
     } while (0);
+}
+
+void send_notif()
+{
+    uint8_t val[] = {'s','h'};
+    esp_ble_gatts_send_indicate(gatts_if_global,
+                                client_conn,
+                                gl_profile_tab[PROFILE_A_APP_ID].char_handle,
+                                sizeof(val),
+                                val,
+                                false);
 }

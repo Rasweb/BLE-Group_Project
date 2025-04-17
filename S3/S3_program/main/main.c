@@ -75,18 +75,30 @@ void app_main(void)
     {
         ESP_LOGE(GATTS_TAG, "set local  MTU failed, error code = %x", local_mtu_ret);
     }
-    uint8_t val[] = {'s', 'h', 'i', 't'};
-    while(1)
+    uint8_t val[] = {'s', 'h'};
+    TickType_t last_tick = 0; // Save current tick count
+
+    while (1)
     {
-        esp_ble_gatts_send_indicate(gatts_if_global,
-            client_conn,
-            gl_profile_tab[PROFILE_A_APP_ID].char_handle,
-            sizeof(val),
-            val,
-            false
-            );
-            vTaskDelay(pdTICKS_TO_MS(1000));
+        TickType_t current_tick = xTaskGetTickCount(); // Get updated tick count
+        
+        // Calculate if 1000ms (1 second) has elapsed
+        if ((current_tick - last_tick) >= pdMS_TO_TICKS(1000))
+        {
+            // Send the notification
+            esp_ble_gatts_send_indicate(gatts_if_global,
+                                        client_conn,
+                                        gl_profile_tab[PROFILE_A_APP_ID].char_handle,
+                                        sizeof(val),
+                                        val,
+                                        false); // use false for notifications
+            
+            // Reset last_tick for next interval
+            last_tick = current_tick;
+        }
+        
+        // Short delay to yield the CPU; adjust as needed
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
     return;
-
 }
