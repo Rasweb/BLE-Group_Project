@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include "Bluedroid_peripheral_server.h"
 
-
+esp_gatt_if_t gatts_if_global = 0;
+uint16_t client_conn = 0;
 
 static uint8_t adv_service_uuid128[32] = {
     /* LSB <--------------------------------------------------------------------------------> MSB */
@@ -61,7 +62,7 @@ static esp_ble_adv_params_t adv_params = {
 
 
 /* One gatt-based profile one app_id and one gatts_if, this array will store the gatts_if returned by ESP_GATTS_REG_EVT */
-static struct gatts_profile_inst gl_profile_tab[PROFILE_NUM] = {
+struct gatts_profile_inst gl_profile_tab[PROFILE_NUM] = {
     [PROFILE_A_APP_ID] = {
         .gatts_cb = gatts_profile_a_event_handler,
         .gatts_if = ESP_GATT_IF_NONE,       /* Not get the gatt_if, so initial is ESP_GATT_IF_NONE */
@@ -254,6 +255,8 @@ static void gatts_profile_a_event_handler(esp_gatts_cb_event_t event, esp_gatt_i
         break;
     }
     case ESP_GATTS_WRITE_EVT: {
+        client_conn = param->write.conn_id; //Richards påhitt
+        
         ESP_LOGI(GATTS_TAG, "Characteristic write, conn_id %d, trans_id %" PRIu32 ", handle %d", param->write.conn_id, param->write.trans_id, param->write.handle);
         if (!param->write.is_prep){
             ESP_LOGI(GATTS_TAG, "value len %d, value ", param->write.len);

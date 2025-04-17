@@ -75,5 +75,18 @@ void app_main(void)
     {
         ESP_LOGE(GATTS_TAG, "set local  MTU failed, error code = %x", local_mtu_ret);
     }
+    uint8_t val[] = {'s', 'h', 'i', 't'};
+    while(1)
+    {
+        esp_ble_gatts_send_indicate(gatts_if_global,
+            client_conn,
+            gl_profile_tab[PROFILE_A_APP_ID].char_handle,
+            sizeof(val),
+            val,
+            false
+            );
+            vTaskDelay(pdTICKS_TO_MS(1000));
+    }
     return;
+
 }
