@@ -1,32 +1,32 @@
-# _Sample project_
+# RGB Onboard Led instructions
+Instructions for how to use the RGB onboard led on the ESP32-C6.
 
-(See the README.md file in the upper level 'examples' directory for more information about examples.)
-
-This is the simplest buildable example. The example is used by command `idf.py create-project`
-that copies the project to user specified path and set it's name. For more information follow the [docs page](https://docs.espressif.com/projects/esp-idf/en/latest/api-guides/build-system.html#start-a-new-project)
-
-
-
-## How to use example
-We encourage the users to use the example as a template for the new projects.
-A recommended way is to follow the instructions on a [docs page](https://docs.espressif.com/projects/esp-idf/en/latest/api-guides/build-system.html#start-a-new-project).
-
-## Example folder contents
-
-The project **sample_project** contains one source file in C language [main.c](main/main.c). The file is located in folder [main](main).
-
-ESP-IDF projects are built using CMake. The project build configuration is contained in `CMakeLists.txt`
-files that provide set of directives and instructions describing the project's source files and targets
-(executable, library, or both). 
-
-Below is short explanation of remaining files in the project folder.
-
+## Include the header file
+```c
+#include "ESP32_Onboard_Led.h"
 ```
-├── CMakeLists.txt
-├── main
-│   ├── CMakeLists.txt
-│   └── main.c
-└── README.md                  This is the file you are currently reading
+
+## Create these macros:
+```c
+#define RGB_LED_STATE 0
+#define RGB_LED_PIN GPIO_NUM_8
 ```
-Additionally, the sample project contains Makefile and component.mk files, used for the legacy Make based build system. 
-They are not used or needed when building with CMake and idf.py.
+
+## Initializing the component:
+``` c
+onboard_rgb_led_t *component_name = rgb_led_init(RGB_LED_STATE, NULL, RGB_LED_PIN);
+    if (component_name == NULL)
+    {
+        ESP_LOGE(TAG, "Failed to initialize component_name");
+    }
+	
+gpio_set_level(RGB_LED_PIN, 0);
+rgb_led_configure(component_name);
+```
+
+## To control the led
+``` c
+component_name->led_state = 1;  
+rgb_led_set_state(component_name);
+rgb_led_free(component_name);
+```
