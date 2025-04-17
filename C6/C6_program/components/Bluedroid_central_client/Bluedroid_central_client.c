@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include "Bluedroid_central_client.h"
 
-
+ble_handle run_ble_setup(){
+    ble_handle new_ble = pvPortMalloc(sizeof(gattc_profile_inst));
+    return new_ble;
+}
 uint16_t client_conn = 0;
 
 esp_gatt_if_t client_interface = 0;
@@ -31,7 +34,7 @@ esp_ble_scan_params_t ble_scan_params = {
 };
 
 /* One gatt-based profile one app_id and one gattc_if, this array will store the gattc_if returned by ESP_GATTS_REG_EVT */
-struct gattc_profile_inst gl_profile_tab[PROFILE_NUM] = {
+gattc_profile_inst gl_profile_tab[PROFILE_NUM] = {
     [PROFILE_A_APP_ID] = {
         .gattc_cb = gattc_profile_event_handler,
         .gattc_if = ESP_GATT_IF_NONE,       /* Not get the gatt_if, so initial is ESP_GATT_IF_NONE */

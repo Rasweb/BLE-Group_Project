@@ -32,10 +32,8 @@ static esp_gattc_descr_elem_t *descr_elem_result = NULL;
 
 
 // esp_gatt_if_t client_if;
-extern uint16_t client_conn;
-extern esp_gatt_if_t client_interface;
 
-struct gattc_profile_inst {
+typedef struct {
     esp_gattc_cb_t gattc_cb;
     uint16_t gattc_if;
     uint16_t app_id;
@@ -44,13 +42,21 @@ struct gattc_profile_inst {
     uint16_t service_end_handle;
     uint16_t char_handle;
     esp_bd_addr_t remote_bda;
-};
+
+    uint16_t client_conn;
+    esp_gatt_if_t client_interface;
+    // gattc_profile_inst gl_profile_tab[];
+    
+}gattc_profile_inst;
+typedef gattc_profile_inst * ble_handle;
+
+// uint16_t client_conn;
+// esp_gatt_if_t client_interface;
+extern struct gattc_profile_inst gl_profile_tab[];
 
 void gattc_profile_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_gattc_cb_param_t *param);
 
-extern struct gattc_profile_inst gl_profile_tab[];
-
-
+ble_handle run_ble_setup();
 
 void esp_gap_cb(esp_gap_ble_cb_event_t event, esp_ble_gap_cb_param_t *param);
 void esp_gattc_cb(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_gattc_cb_param_t *param);
