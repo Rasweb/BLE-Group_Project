@@ -89,6 +89,14 @@ void ble_send(){
 
 }
 
+// void ble_send_req(){
+//     esp_ble_gattc_search_service
+// }
+
+// void ble_read(){
+//     gattc_read_char_evt_param();
+// }
+
 esp_bt_uuid_t remote_filter_service_uuid = {
     .len = ESP_UUID_LEN_16,
     .uuid = {.uuid16 = REMOTE_SERVICE_UUID,},
@@ -308,7 +316,7 @@ void gattc_profile_event_handler(esp_gattc_cb_event_t event, esp_gatt_if_t gattc
         }else{
             ESP_LOGI(GATTC_TAG, "Indication received");
         }
-        ESP_LOG_BUFFER_HEX(GATTC_TAG, p_data->notify.value, p_data->notify.value_len);
+        ESP_LOG_BUFFER_HEX(FROM_S3, p_data->notify.value, p_data->notify.value_len);
         break;
     case ESP_GATTC_WRITE_DESCR_EVT:
         if (p_data->write.status != ESP_GATT_OK){

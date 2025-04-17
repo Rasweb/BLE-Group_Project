@@ -16,6 +16,7 @@
 #include "freertos/FreeRTOS.h"
 
 #define GATTC_TAG "GATTC_DEMO"
+#define FROM_S3 "From S3"
 #define REMOTE_SERVICE_UUID        0x00FF
 #define REMOTE_NOTIFY_CHAR_UUID    0xFF01
 #define PROFILE_NUM      1
@@ -56,6 +57,8 @@ void esp_gattc_cb(esp_gattc_cb_event_t event, esp_gatt_if_t gattc_if, esp_ble_ga
 void ble_run();
 
 void ble_send();
+
+// void ble_read();
 
 
 void func(void);
