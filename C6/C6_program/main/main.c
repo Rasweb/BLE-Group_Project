@@ -3,12 +3,13 @@
 
 void app_main(void)
 {
-ble_run();
-int i = 0;
+    ble_run();
+    int i = 0;
     while (1)
     {
         i++;
-        if(i >= 1000){
+        if (i >= 500)
+        {
             i = 0;
             ble_send();
             printf("hej\n");
@@ -16,5 +17,4 @@ int i = 0;
         // ble_read();
         vTaskDelay(pdMS_TO_TICKS(10));
     }
-
 }
