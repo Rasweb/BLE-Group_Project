@@ -21,7 +21,6 @@
 
 #define GATTS_TAG "GATTS_DEMO"
 
-
 #define GATTS_SERVICE_UUID_TEST_A   0x00FF
 #define GATTS_CHAR_UUID_TEST_A      0xFF01
 #define GATTS_DESCR_UUID_TEST_A     0x3333
@@ -31,10 +30,6 @@
 #define GATTS_CHAR_UUID_TEST_B      0xEE01
 #define GATTS_DESCR_UUID_TEST_B     0x2222
 #define GATTS_NUM_HANDLE_TEST_B     4
-
-
-
-
 
 void ble_server_run();
 
