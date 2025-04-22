@@ -13,8 +13,6 @@
 #include "esp_adc/adc_cali_scheme.h"
 
 
-//Denna implementation är mer robust än vad jag kommer nyttja i det aktuella projektet, mer specifikt "batt_state"-enumen.
-//Charge_enumen är tillräckligt indikativ för projektets scope, men jag kommer nog nyttja och utveckla denna komponent mer i framtiden.
 
 typedef enum {
     BATT_NOT_CONNECTED = -1,

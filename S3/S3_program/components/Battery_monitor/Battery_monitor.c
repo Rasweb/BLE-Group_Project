@@ -29,16 +29,18 @@ batt_handle battery_init(const gpio_num_t pin)
 
     adc_oneshot_unit_init_cfg_t adc_config = {
         .unit_id = ADC_UNIT_1,
+        
     };
     ESP_ERROR_CHECK(adc_oneshot_new_unit(&adc_config, &battery->ADC_handle));
 
     adc_oneshot_chan_cfg_t chan_config = {
         .atten = ADC_ATTEN_DB_12,
         .bitwidth = ADC_BITWIDTH_DEFAULT,
+        
     };
-    ESP_ERROR_CHECK(adc_oneshot_config_channel(battery->ADC_handle, pin, &chan_config));
+    ESP_ERROR_CHECK(adc_oneshot_config_channel(battery->ADC_handle, pin-1, &chan_config));
 
-    ADC_calibration_init(ADC_UNIT_1, pin, chan_config.atten, &battery->CAL_handle); //endast CURVE_FITTING på C6
+    ADC_calibration_init(ADC_UNIT_1, pin-1, chan_config.atten, &battery->CAL_handle); //endast CURVE_FITTING på C6
     return battery;
 }
 
@@ -118,12 +120,13 @@ void battery_update(batt_handle battery)
 {
     TickType_t current_time = xTaskGetTickCount();
 
-
-    if(current_time - battery->measure_time > pdMS_TO_TICKS(10 * 1000)) //ta measurement var 10e sekund
+    // if(current_time - battery->measure_time > pdMS_TO_TICKS(10 * 1000)) //ta measurement var 10e sekund
+    if(current_time - battery->measure_time > pdMS_TO_TICKS(10)) //ta measurement var 10e millisekund
     {
         battery->measure_time = current_time;
-        adc_oneshot_get_calibrated_result(battery->ADC_handle,battery->CAL_handle, battery->pin, &battery->voltage);
+        adc_oneshot_get_calibrated_result(battery->ADC_handle,battery->CAL_handle, battery->pin-1, &battery->voltage);
         printf("%d\n", battery->voltage);
+
         if (battery->voltage < battery->voltage_prev - BATT_HYSTERESIS || //om nya värdet är +/- det gamla med hysteres så updaterar vi state.
             battery->voltage > battery->voltage_prev + BATT_HYSTERESIS)
         {
