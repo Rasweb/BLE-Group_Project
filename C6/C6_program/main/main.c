@@ -11,10 +11,17 @@ void app_main(void)
         if (i >= 500)
         {
             i = 0;
+            if (get_received_data() == 0x01)
+            {
+                printf("Good [%.2x]\n", get_received_data());
+                clear_received_data();
+            }
+            else
+            {
+                printf("Bad [%.2x]\n", get_received_data());
+            }
             ble_send();
-            printf("hej\n");
         }
-        // ble_read();
         vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
