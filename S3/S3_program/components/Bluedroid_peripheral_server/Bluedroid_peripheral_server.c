@@ -3,6 +3,7 @@
 
 esp_gatt_if_t gatts_if_global = 0;
 uint16_t client_conn = 0;
+static uint8_t recieved_data = 0x00;
 
 static uint8_t adv_service_uuid128[32] = {
     /* LSB <--------------------------------------------------------------------------------> MSB */
@@ -256,7 +257,7 @@ static void gatts_profile_a_event_handler(esp_gatts_cb_event_t event, esp_gatt_i
         break;
     }
     case ESP_GATTS_WRITE_EVT: {
-        
+        recieved_data = *(param->write).value; //Richards påhitt
         ESP_LOGI(GATTS_TAG, "Characteristic write, conn_id %d, trans_id %" PRIu32 ", handle %d", param->write.conn_id, param->write.trans_id, param->write.handle);
         if (!param->write.is_prep){
             ESP_LOGI(GATTS_TAG, "value len %d, value ", param->write.len);
@@ -585,4 +586,14 @@ void send_notif()
                                 sizeof(val),
                                 val,
                                 false);
+}
+
+uint8_t get_recieved_data()
+{
+    return recieved_data;
+}
+
+void clear_recieved_data()
+{
+    recieved_data = 0x00;
 }
