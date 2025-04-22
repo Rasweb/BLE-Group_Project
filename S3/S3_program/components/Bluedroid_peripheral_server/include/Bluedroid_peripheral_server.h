@@ -97,6 +97,8 @@ void example_write_event_env(esp_gatt_if_t gatts_if, prepare_type_env_t *prepare
 
 void example_exec_write_event_env(prepare_type_env_t *prepare_write_env, esp_ble_gatts_cb_param_t *param);
 
+void ble_server_run();
+
 void send_notification(bool warning);
 
 uint8_t get_recieved_data();
