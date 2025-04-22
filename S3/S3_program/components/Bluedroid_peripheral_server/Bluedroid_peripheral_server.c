@@ -577,15 +577,17 @@ void gatts_event_handler(esp_gatts_cb_event_t event, esp_gatt_if_t gatts_if, esp
     } while (0);
 }
 
-void send_notif()
+void send_notification(bool warning)
 {
-    uint8_t val[] = {'s','h'};
+    uint8_t data = 0x00;
+    if(warning)
+        data = 0x01;    
     esp_ble_gatts_send_indicate(gatts_if_global,
                                 client_conn,
                                 gl_profile_tab[PROFILE_A_APP_ID].char_handle,
-                                sizeof(val),
-                                val,
-                                false);
+                                sizeof(data),
+                                &data,
+                                false); // use false for notifications
 }
 
 uint8_t get_recieved_data()
