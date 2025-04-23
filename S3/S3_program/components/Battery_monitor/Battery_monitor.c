@@ -125,11 +125,11 @@ void battery_update(batt_handle battery)
     {
         battery->measure_time = current_time;
         adc_oneshot_get_calibrated_result(battery->ADC_handle,battery->CAL_handle, battery->pin-1, &battery->voltage);
-        printf("%d\n", battery->voltage);
-
+        
         if (battery->voltage < battery->voltage_prev - BATT_HYSTERESIS || //om nya värdet är +/- det gamla med hysteres så updaterar vi state.
             battery->voltage > battery->voltage_prev + BATT_HYSTERESIS)
-        {
+            {
+            // printf("%d\n", battery->voltage); // bra för debugging
             battery_charge_calc(battery);
             battery->voltage_prev = battery->voltage;
         }
