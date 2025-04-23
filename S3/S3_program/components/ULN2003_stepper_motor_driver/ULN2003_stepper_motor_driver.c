@@ -2,7 +2,8 @@
 
 static const char* TAG = "STEPPER_MOTOR";
 
-static const int full_step_wave[4][4] = {
+static const int full_step_wave[4][4] =
+{
     {1, 0, 0, 0},
     {0, 1, 0, 0},
     {0, 0, 1, 0},
@@ -43,6 +44,8 @@ stepper_motor_handle stepper_motor_init(const gpio_num_t in1, const gpio_num_t i
     new_stepper->target_steps = 0;
     new_stepper->steps_taken = 0;
     new_stepper->direction = STPR_MTR_NONE;
+    new_stepper->ready = true;
+    new_stepper->position = STPR_MTR_UNKNOWN;
 
     return new_stepper;
 }
@@ -64,13 +67,16 @@ void stepper_motor_update(stepper_motor_handle stepper)
     if(current_time - stepper->last_step_time >= 10)
     {
         stepper->last_step_time = current_time;
+        stepper->ready = false;
 
         if(stepper->direction == STPR_MTR_CW)
         {
+            stepper->position = STPR_MTR_OPEN;
             stepper->current_phase = (stepper->current_phase + 1) % total_steps;
         }
         else if(stepper->direction == STPR_MTR_CCW)
         {
+            stepper->position = STPR_MTR_CLOSED;
             stepper->current_phase = (stepper->current_phase + total_steps - 1) % total_steps;
         }
         else
@@ -86,11 +92,22 @@ void stepper_motor_update(stepper_motor_handle stepper)
 
         stepper->steps_taken++;
 
-        if(stepper->steps_taken >= stepper->target_steps)
+        if(stepper->steps_taken >= stepper->target_steps) // när sekvensen är färdig
         {
             stepper->direction  = STPR_MTR_NONE;
             stepper->target_steps = 0;
             stepper->steps_taken = 0;
+            stepper->ready = true;
         }
     }
+}
+
+bool stepper_motor_ready(const stepper_motor_handle stepper)
+{
+    return stepper->ready;
+}
+
+STPR_MTR_POSITION get_stepper_motor_position(const stepper_motor_handle stepper)
+{
+    return stepper->position;
 }
