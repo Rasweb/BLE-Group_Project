@@ -1,3 +1,5 @@
 idf_component_register(SRCS "main.c"
                     INCLUDE_DIRS "."
-                    REQUIRES Bluedroid_peripheral_server)
+                    REQUIRES 
+                    Bluedroid_peripheral_server 
+                    Battery_monitor )
