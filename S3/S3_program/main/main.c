@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "Bluedroid_peripheral_server.h"
 #include "Battery_monitor.h"
+#include "Button_interrupt.h"
+#include "ULN2003_stepper_motor_driver.h"
 
 #define BATTERY_INTERVAL (5*1000)
 #define BATTERY_PIN GPIO_NUM_8 // ADC1 CHANNEL 7
