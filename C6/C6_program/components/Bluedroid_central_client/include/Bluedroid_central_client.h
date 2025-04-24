@@ -15,7 +15,7 @@
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
 
-#define GATTC_TAG "GATTC_DEMO"
+#define GATTC_TAG "CLIENT"
 #define FROM_S3 "From S3"
 #define REMOTE_SERVICE_UUID 0x00FF
 #define REMOTE_NOTIFY_CHAR_UUID 0xFF01
@@ -29,7 +29,6 @@ static bool get_server = false;
 static esp_gattc_char_elem_t *char_elem_result = NULL;
 static esp_gattc_descr_elem_t *descr_elem_result = NULL;
 
-// esp_gatt_if_t client_if;
 extern uint16_t client_conn;
 extern esp_gatt_if_t client_interface;
 

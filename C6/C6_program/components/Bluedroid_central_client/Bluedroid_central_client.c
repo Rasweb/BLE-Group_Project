@@ -25,9 +25,7 @@ void ble_run()
         ret = nvs_flash_init();
     }
     ESP_ERROR_CHECK(ret);
-    // #if CONFIG_EXAMPLE_CI_PIPELINE_ID
-    // memcpy(remote_device_name, esp_bluedroid_get_example_name(), sizeof(remote_device_name));
-    // #endif
+
     ESP_ERROR_CHECK(esp_bt_controller_mem_release(ESP_BT_MODE_CLASSIC_BT));
 
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();

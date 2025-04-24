@@ -729,7 +729,7 @@ void send_notification(bool warning)
                                 gl_profile_tab[PROFILE_A_APP_ID].char_handle,
                                 sizeof(data),
                                 &data,
-                                false); // use false for notifications
+                                false);
 }
 
 uint8_t get_recieved_data()

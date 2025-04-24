@@ -31,13 +31,13 @@ logic_e button_logic();
 
 void app_main(void)
 {
-    onboard_rgb_led_t *rgb_led = rgb_led_init(RGB_LED_STATE, NULL, RGB_LED_PIN);
+    onboard_rgb_led_t* rgb_led = rgb_led_init(RGB_LED_STATE, NULL, RGB_LED_PIN);
     if (rgb_led == NULL)
     {
         ESP_LOGE(TAG, "Failed to initialize component_name");
     }
 
-    gpio_set_level(RGB_LED_PIN, 0); // Kanske inte behövs
+    gpio_set_level(RGB_LED_PIN, 0);
     rgb_led_configure(rgb_led);
 
     logic_e state = WAITING;
@@ -48,7 +48,7 @@ void app_main(void)
     ble_run();
     TickType_t last_tick = 0;
 
-    while (state != DENIED) // ändra till waiting senare
+    while (state != DENIED)
     {
         TickType_t current_tick = xTaskGetTickCount();
         btn_i_update(btn1);
@@ -122,14 +122,14 @@ logic_e button_logic()
                     {
                         printf("Access granted!\n\n");
                         attempt = 0;
-                        currentIndex = 0; // ta bort sen
-                        lastindex = 0;    // ta bort sen
+                        currentIndex = 0; 
+                        lastindex = 0;    
                         return ACCESS;
                     }
                     else
                     {
                         printf("Correct\n");
-                        // return WAITING;
+                        
                     }
                 }
                 else
@@ -138,7 +138,7 @@ logic_e button_logic()
                     attempt++;
                     currentIndex = 0;
                     lastindex = 0;
-                    // return WAITING;
+                    
                 }
             }
         }
@@ -150,18 +150,3 @@ logic_e button_logic()
     }
     return WAITING;
 }
-// if (i >= 500)
-// {
-//     i = 0;
-//     if (get_received_data() == 0x01)
-//     {
-//         printf("Good [%.2x]\n", get_received_data());
-//         clear_received_data();
-//     }
-//     else
-//     {
-//         printf("Bad [%.2x]\n", get_received_data());
-//     }
-//     ble_send();
-// }
-// vTaskDelay(pdMS_TO_TICKS(10));
