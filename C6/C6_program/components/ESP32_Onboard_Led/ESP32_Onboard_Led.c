@@ -1,5 +1,5 @@
 
-#include "ESP32_Onboard_Led.h"
+#include "esp32_onboard_led.h"
 
 onboard_rgb_led_t *rgb_led_init(uint8_t led_state, led_strip_handle_t led_strip, gpio_num_t led_pin)
 {
@@ -30,9 +30,11 @@ void rgb_led_configure(onboard_rgb_led_t *led)
 
 static void rgb_led_color(onboard_rgb_led_t *led)
 {
+    printf("state %d\n", led->led_state);
     /* If the addressable LED is enabled */
     if (led->led_state == 1)
     {
+
         /* Set the LED pixel using RGB from 0 (0%) to 255 (100%) for each color */
         led_strip_set_pixel(led->led_strip, 0, 100, 0, 0);
         /* Refresh the strip to send data */
@@ -41,7 +43,7 @@ static void rgb_led_color(onboard_rgb_led_t *led)
     else if (led->led_state == 2)
     {
         /* Set the LED pixel using RGB from 0 (0%) to 255 (100%) for each color */
-        led_strip_set_pixel(led->led_strip, 0, 230, 29, 0);
+        led_strip_set_pixel(led->led_strip, 0, 0, 100, 0);
         /* Refresh the strip to send data */
         led_strip_refresh(led->led_strip);
     }
