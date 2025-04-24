@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "Button_interrupt.h"
+#include "Bluedroid_central_client.h"
 #include "freertos/FreeRTOS.h"
 
 typedef enum{
@@ -11,12 +12,17 @@ typedef enum{
 btn_i_handle btn1;
 btn_i_handle btn2;
 btn_i_handle btn3;
-int correctsequence[] = {
-    1, 2, 3, 3, 2, 1};
+int correctsequence[] = 
+{
+    1, 2, 3, 3, 2, 1
+};
 logic_e button_logic();
 
 void app_main(void)
 {
+    ble_run();
+    int i = 0;
+  
     logic_e state = WAITING;
     btn1 = btn_i_init(4, PULLUP, 250);
     btn2 = btn_i_init(21, PULLUP, 250);
@@ -36,10 +42,10 @@ logic_e button_logic()
     static int currentIndex = 0;
     static int user_sequence[6];
     static int lastindex = 0;
-    if (attempt < 3)
+      while (1)
     {
-
-
+         if (attempt < 3)
+    {
         if (currentIndex < 6)
         {
             btn_i_update(btn1);
@@ -103,4 +109,20 @@ logic_e button_logic()
         return DENIED;
     }
     return WAITING;
-}
+        i++;
+        if (i >= 500)
+        {
+            i = 0;
+            if (get_received_data() == 0x01)
+            {
+                printf("Good [%.2x]\n", get_received_data());
+                clear_received_data();
+            }
+            else
+            {
+                printf("Bad [%.2x]\n", get_received_data());
+            }
+            ble_send();
+        }
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }

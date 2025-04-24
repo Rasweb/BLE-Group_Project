@@ -1,3 +1,4 @@
 idf_component_register(SRCS "main.c"
                     INCLUDE_DIRS "."
-                    REQUIRES Button_interrupt)
+                    REQUIRES Bluedroid_central_client Button_interrupt)
+
