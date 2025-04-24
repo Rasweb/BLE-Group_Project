@@ -3,37 +3,61 @@
 #include "Bluedroid_central_client.h"
 #include "freertos/FreeRTOS.h"
 
-typedef enum{
+#define BTN_1 GPIO_NUM_2
+#define BTN_2 GPIO_NUM_3
+#define BTN_3 GPIO_NUM_4
+
+typedef enum
+{
     ACCESS,
     DENIED,
     WAITING
 }logic_e;
 
-btn_i_handle btn1;
-btn_i_handle btn2;
-btn_i_handle btn3;
-int correctsequence[] = 
+btn_i_handle btn1; 
+btn_i_handle btn2; 
+btn_i_handle btn3; 
+
+int correct_sequence[] =
 {
     1, 2, 3, 3, 2, 1
 };
+
 logic_e button_logic();
 
 void app_main(void)
 {
-    ble_run();
-    int i = 0;
-  
     logic_e state = WAITING;
-    btn1 = btn_i_init(4, PULLUP, 250);
-    btn2 = btn_i_init(21, PULLUP, 250);
-    btn3 = btn_i_init(13, PULLUP, 250);
+    btn1 = btn_i_init(BTN_1, PULLUP, 250);
+    btn2 = btn_i_init(BTN_2, PULLUP, 250);
+    btn3 = btn_i_init(BTN_3, PULLUP, 250);
+
+    ble_run();
+
     while(state != DENIED) //ändra till waiting senare
     {
+        btn_i_update(btn1);
+        btn_i_update(btn2);
+        btn_i_update(btn3);
+
         state = button_logic();
         vTaskDelay(pdMS_TO_TICKS(10));
         if(state == ACCESS){
             printf("HOORAAAY!\n");
+            ble_send();
         }
+        if (get_received_data() == 0x06)
+        {
+            printf("Battery low!\n");
+            clear_received_data();
+            //lägg in kod för intern LED RÖD
+        }
+        else if (get_received_data() == 0x00)
+        {
+            clear_received_data();
+            //lägg in kod för intern LED GRÖN
+        }
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
 logic_e button_logic()
@@ -42,33 +66,29 @@ logic_e button_logic()
     static int currentIndex = 0;
     static int user_sequence[6];
     static int lastindex = 0;
-      while (1)
-    {
-         if (attempt < 3)
+
+    if (attempt < 3)
     {
         if (currentIndex < 6)
         {
-            btn_i_update(btn1);
-            btn_i_update(btn2);
-            btn_i_update(btn3);
-            // lägg in vtaskDelay
-            
 
             if (btn_pressed(btn1))
             {
-                // printf("btn 1\n");
+                printf("btn 1\n");
                 user_sequence[currentIndex] = 1;
                 currentIndex++;
                 btn_clear_flag(btn1);
             }
             if (btn_pressed(btn2))
             {
+                printf("btn 2\n");
                 user_sequence[currentIndex] = 2;
                 currentIndex++;
                 btn_clear_flag(btn2);
             }
             if (btn_pressed(btn3))
             {
+                printf("btn 3\n");
                 user_sequence[currentIndex] = 3;
                 currentIndex++;
                 btn_clear_flag(btn3);
@@ -77,14 +97,14 @@ logic_e button_logic()
             {
                 lastindex++;
 
-                if (user_sequence[currentIndex - 1] == correctsequence[currentIndex - 1])
+                if (user_sequence[currentIndex - 1] == correct_sequence[currentIndex - 1])
                 {
                     if (currentIndex == 6)
                     {
                         printf("Access granted!\n\n");
                         attempt = 0;
-                        currentIndex = 0; //ta bort sen
-                        lastindex = 0; //ta bort sen
+                        currentIndex = 0; // ta bort sen
+                        lastindex = 0;    // ta bort sen
                         return ACCESS;
                     }
                     else
@@ -104,25 +124,25 @@ logic_e button_logic()
             }
         }
     }
-    if(attempt == 3){
+    if (attempt == 3)
+    {
         printf("Access Denied!\n");
         return DENIED;
     }
     return WAITING;
-        i++;
-        if (i >= 500)
-        {
-            i = 0;
-            if (get_received_data() == 0x01)
-            {
-                printf("Good [%.2x]\n", get_received_data());
-                clear_received_data();
-            }
-            else
-            {
-                printf("Bad [%.2x]\n", get_received_data());
-            }
-            ble_send();
-        }
-        vTaskDelay(pdMS_TO_TICKS(10));
-    }
+}
+    // if (i >= 500)
+    // {
+    //     i = 0;
+    //     if (get_received_data() == 0x01)
+    //     {
+    //         printf("Good [%.2x]\n", get_received_data());
+    //         clear_received_data();
+    //     }
+    //     else
+    //     {
+    //         printf("Bad [%.2x]\n", get_received_data());
+    //     }
+    //     ble_send();
+    // }
+    // vTaskDelay(pdMS_TO_TICKS(10));
