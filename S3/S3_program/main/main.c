@@ -68,7 +68,7 @@ void app_main(void)
 
             last_tick = current_tick;
         }
-        if (get_recieved_data()                      == 0x01 &&
+        if (get_recieved_data()                      == 0x06 &&
             stepper_motor_ready(stepper_motor)       == true &&
             get_stepper_motor_position(stepper_motor)!= STPR_MTR_OPEN) //kör öppning endast om den inte redan körs eller inte redan är öppnad
         {

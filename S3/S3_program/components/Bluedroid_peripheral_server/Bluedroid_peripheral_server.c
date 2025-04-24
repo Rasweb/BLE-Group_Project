@@ -723,7 +723,7 @@ void send_notification(bool warning)
 {
     uint8_t data = 0x00;
     if(warning)
-        data = 0x01;    
+        data = 0x06;    
     esp_ble_gatts_send_indicate(gatts_if_global,
                                 client_conn,
                                 gl_profile_tab[PROFILE_A_APP_ID].char_handle,
