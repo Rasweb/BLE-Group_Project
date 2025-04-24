@@ -46,7 +46,7 @@ void app_main(void)
             printf("HOORAAAY!\n");
             ble_send();
         }
-        if (get_received_data() == 0x01)
+        if (get_received_data() == 0x06)
         {
             printf("Battery low!\n");
             clear_received_data();
@@ -54,10 +54,10 @@ void app_main(void)
         }
         else if (get_received_data() == 0x00)
         {
-            printf("Battery OK!\n");
             clear_received_data();
             //lägg in kod för intern LED GRÖN
         }
+        vTaskDelay(pdMS_TO_TICKS(10));
     }
 }
 logic_e button_logic()
@@ -74,19 +74,21 @@ logic_e button_logic()
 
             if (btn_pressed(btn1))
             {
-                // printf("btn 1\n");
+                printf("btn 1\n");
                 user_sequence[currentIndex] = 1;
                 currentIndex++;
                 btn_clear_flag(btn1);
             }
             if (btn_pressed(btn2))
             {
+                printf("btn 2\n");
                 user_sequence[currentIndex] = 2;
                 currentIndex++;
                 btn_clear_flag(btn2);
             }
             if (btn_pressed(btn3))
             {
+                printf("btn 3\n");
                 user_sequence[currentIndex] = 3;
                 currentIndex++;
                 btn_clear_flag(btn3);

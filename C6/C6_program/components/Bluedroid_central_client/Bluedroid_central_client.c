@@ -88,7 +88,7 @@ void ble_run()
 
 void ble_send()
 {
-    uint8_t data = 0x01;
+    uint8_t data = 0x06;
     esp_ble_gattc_write_char(client_interface,
                              gl_profile_tab[PROFILE_A_APP_ID].conn_id,
                              gl_profile_tab[PROFILE_A_APP_ID].char_handle,
@@ -573,7 +573,7 @@ void handle_write_descriptor(esp_gatt_if_t gattc_if, esp_ble_gattc_cb_param_t *p
     uint8_t write_char_data[35];
     for (int i = 0; i < sizeof(write_char_data); ++i)
     {
-        write_char_data[i] = i % 256;
+        write_char_data[i] = 0xff;
     }
     esp_ble_gattc_write_char(gattc_if,
                              gl_profile_tab[PROFILE_A_APP_ID].conn_id,
